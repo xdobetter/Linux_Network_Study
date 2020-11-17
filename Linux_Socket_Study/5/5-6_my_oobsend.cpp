@@ -35,7 +35,7 @@ int main( int argc, char* argv[] )
         const char* oob_data = "abc";
         const char* normal_data = "123";
         send( sockfd, normal_data, strlen( normal_data ), 0 );
-        send( sockfd, oob_data, strlen( oob_data ), 0 );
+        send( sockfd, normal_data, strlen( normal_data ), 0 );
         send( sockfd, normal_data, strlen( normal_data ), 0 );
     }
 
