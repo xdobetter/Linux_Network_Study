@@ -1,3 +1,13 @@
+/**
+ * @file 5-9_my_reuse_address.cpp
+ * @author dobetter (db.xi@zju.edu.cn)
+ * @brief 这个程序主要是展示服务器被立即关闭后，仍然可以复用这个端口的功能
+ * @version 0.1
+ * @date 2020-11-18
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -7,8 +17,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-
-#define BUF_SIZE 1024
 
 int main( int argc, char* argv[] )
 {
@@ -20,15 +28,16 @@ int main( int argc, char* argv[] )
     const char* ip = argv[1];
     int port = atoi( argv[2] );
 
+    int sock = socket( PF_INET, SOCK_STREAM, 0 );
+    assert( sock >= 0 );
+    int reuse = 1;
+    setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof( reuse ) );//实现复用端口
+
     struct sockaddr_in address;
     bzero( &address, sizeof( address ) );
     address.sin_family = AF_INET;
     inet_pton( AF_INET, ip, &address.sin_addr );
     address.sin_port = htons( port );
-
-    int sock = socket( PF_INET, SOCK_STREAM, 0 );
-    assert( sock >= 0 );
-
     int ret = bind( sock, ( struct sockaddr* )&address, sizeof( address ) );
     assert( ret != -1 );
 
@@ -44,20 +53,9 @@ int main( int argc, char* argv[] )
     }
     else
     {
-        char buffer[ BUF_SIZE ];
-
-        memset( buffer, '\0', BUF_SIZE );
-        ret = recv( connfd, buffer, 3, 0 );
-        printf( "got %d bytes of normal data '%s'\n", ret, buffer );
-
-        memset( buffer, '\0', BUF_SIZE );
-        ret = recv( connfd, buffer, 3, 0 );
-        printf( "got %d bytes of oob data '%s'\n", ret, buffer );
-
-        memset( buffer, '\0', BUF_SIZE );
-        ret = recv( connfd, buffer, 3, 0 );
-        printf( "got %d bytes of normal data '%s'\n", ret, buffer );
-
+        char remote[INET_ADDRSTRLEN ];
+        printf( "connected with ip: %s and port: %d\n", 
+            inet_ntop( AF_INET, &client.sin_addr, remote, INET_ADDRSTRLEN ), ntohs( client.sin_port ) );
         close( connfd );
     }
 
