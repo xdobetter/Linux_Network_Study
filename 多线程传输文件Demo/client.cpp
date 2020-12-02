@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     }  
     bzero(&server_address, sizeof(server_address));
     server_address.sin_family = AF_INET;
-    inet_pton(AF_INET, "127.0.0.1", &server_address.sin_addr.s_addr);
+    inet_pton(AF_INET, "10.76.7.141", &server_address.sin_addr.s_addr);
     server_address.sin_port = htons(SERV_PORT);
     if (connect(sockfd, (struct sockaddr*)&server_address, sizeof(server_address)) < 0)  
     { 
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 
         void* ret;  
         pthread_join(tid[i], &ret);  
-        printf("the thread  %d connecttion socket finished sending\n", *(int*)ret); 
+        printf("the thread  %d connecttion socket finished sending\n", i); 
     }
     close(filefd);  
     free(tid); 
