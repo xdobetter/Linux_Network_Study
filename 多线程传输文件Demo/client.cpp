@@ -75,14 +75,15 @@ int main(int argc, char *argv[])
 {
 
     struct sockaddr_in servaddr;
-    if (argc != 3)  
+    if (argc != 4)  
     {  
-        fprintf(stderr, "please input: %s  N filename\n", argv[0]);  
+        fprintf(stderr, "please input: %s  thread_number filename ip\n", argv[0]);  
         exit(1);  
     }  
     printf("sizeof(off_t) = %lu\n",sizeof(off_t)); //开启宏开关后 32系统该值为8字节  
     const int n = atoi(argv[1]);  
     const char* filename = argv[2];
+    const char* ip=argv[3];
     struct stat statbuf;  
     if (lstat(filename, &statbuf) < 0)  
     {  
@@ -102,7 +103,7 @@ int main(int argc, char *argv[])
     }  
     bzero(&server_address, sizeof(server_address));
     server_address.sin_family = AF_INET;
-    inet_pton(AF_INET, "10.76.7.141", &server_address.sin_addr.s_addr);
+    inet_pton(AF_INET, ip, &server_address.sin_addr.s_addr);
     server_address.sin_port = htons(SERV_PORT);
     if (connect(sockfd, (struct sockaddr*)&server_address, sizeof(server_address)) < 0)  
     { 
