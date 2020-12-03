@@ -271,7 +271,7 @@ int main(int argc, const char *argv[])
 					int param[] = {epfd, ep_events[i].data.fd};
 					pthread_create(&id, NULL, connect_handle, (void *)param);
 					pthread_join(id, NULL);
-					//close(ep_events[i].data.fd);
+					close(ep_events[i].data.fd);
 					break;
 				}
 			}
