@@ -22,7 +22,7 @@ typedef struct
 int filefd;  
 int file_block_size = 0;  
 struct sockaddr_in server_address; 
-void *sender(void *s)
+void *sender(void *s)//void *s 一个无类型指针,可以转换为任意类型
 {
     thread_data tdata = *((thread_data*)s);  
     long long cur = tdata.cur;  
@@ -84,15 +84,15 @@ int main(int argc, char *argv[])
     const int n = atoi(argv[1]);  
     const char* filename = argv[2];
     const char* ip=argv[3];
-    struct stat statbuf;  
-    if (lstat(filename, &statbuf) < 0)  
+    struct stat statbuf;  ///文件（夹）信息的结构体,一般情况下，我们关心文件大小和创建时间、访问时间、修改时间
+    if (lstat(filename, &statbuf) < 0)  //返回文件的信息，成功为0，否则为-1
     {  
         perror("lstat error");  
         exit(EXIT_FAILURE);  
     }
-    long long file_len = (long long)statbuf.st_size;  
-    printf("file len: %lld\n",file_len); 
-    file_block_size=file_len/n;
+    long long file_len = (long long)statbuf.st_size;  //文件长度
+    printf("file len: %lld\n",file_len); //
+    file_block_size=file_len/n;//每一块文件的长度
     printf("file_block_size = %d\n", file_block_size);
     int sockfd;
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
